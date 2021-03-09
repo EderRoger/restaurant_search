@@ -50,9 +50,9 @@ public class RestaurantService {
         if (nonNull(searchCriteria.getCuisine())) {
             paramsCount++;
             if (newList.isEmpty())
-                newList = repository.getRestaurants().stream().filter(r -> r.getCuisine().getName().contains(searchCriteria.getCuisine())).collect(Collectors.toList());
+                newList = repository.getRestaurants().stream().filter(r ->  repository.findCuisineById(r.getCuisineId()).getName().contains(searchCriteria.getCuisine())).collect(Collectors.toList());
             else
-                newList = newList.stream().filter(r -> r.getCuisine().getName().contains(searchCriteria.getCuisine())).collect(Collectors.toList());
+                newList = newList.stream().filter(r -> repository.findCuisineById(r.getCuisineId()).getName().contains(searchCriteria.getCuisine())).collect(Collectors.toList());
         }
 
 

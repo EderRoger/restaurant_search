@@ -8,11 +8,20 @@ public enum Rating {
 
     private int rating;
 
-    Rating(int rating) {
+    Rating(Integer rating) {
         this.rating = rating;
     }
 
     public int getRating() {
         return rating;
+    }
+
+    public static Rating findById(Integer id){
+        for (int i = 0; i < values().length; i++) {
+            if(values()[i].getRating() == id){
+                return values()[i];
+            }
+        }
+        return null;
     }
 }
