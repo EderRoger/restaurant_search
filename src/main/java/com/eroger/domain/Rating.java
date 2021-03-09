@@ -12,10 +12,6 @@ public enum Rating {
         this.rating = rating;
     }
 
-    public static Rating getRatingByValue(String value){
-        return Arrays.stream(values()).filter(r -> r.equals(value)).findFirst().get();
-    }
-
     public int getRating() {
         return rating;
     }

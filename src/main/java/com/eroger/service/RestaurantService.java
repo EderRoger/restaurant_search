@@ -43,6 +43,10 @@ public class RestaurantService {
         return restaurants.stream().filter(r -> r.getPrice().compareTo(searchCriteria.getPrice()) <= 0).collect(Collectors.toList());
     }
 
+    public List<Restaurant> findByRestaurantCuisine(SearchCriteria searchCriteria) {
+        return restaurants.stream().filter(r -> r.getCuisine().getName().contains(searchCriteria.getCuisine())).collect(Collectors.toList());
+    }
+
     private Restaurant restaurantBuilder(String name, Rating rating, int distance, BigDecimal price, Cuisine cuisine) {
         return new Restaurant(name, rating, distance, price, cuisine);
     }
