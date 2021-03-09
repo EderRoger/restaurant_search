@@ -29,36 +29,50 @@ public class RestaurantServiceTest {
 
     @Test
     public void shouldFindByName() {
-        SearchCriteria searchCriteria = new SearchCriteria("Del", null, 0, null, null);
-        List<Restaurant> restaurants = new RestaurantService().findByRestaurantName(searchCriteria);
-        Assertions.assertEquals(7, restaurants.size());
+        SearchCriteria searchCriteria = new SearchCriteria("Del", null, null, null, null);
+        List<Restaurant> restaurants = new RestaurantService().findByFilters(searchCriteria);
+        Assertions.assertEquals(5, restaurants.size());
+    }
+
+    @Test
+    public void shouldFindByNameSortedByDistance() {
+        SearchCriteria searchCriteria = new SearchCriteria("Del", null, null, null, "Japanese");
+        List<Restaurant> restaurants = new RestaurantService().findByFilters(searchCriteria);
+        Assertions.assertEquals(3, restaurants.get(0).getDistance());
     }
 
     @Test
     public void shouldFindByRatings() {
-        SearchCriteria searchCriteria = new SearchCriteria(null, Rating.FOUR, 0, null, null);
-        List<Restaurant> restaurants = new RestaurantService().findByRestaurantRatings(searchCriteria);
+        SearchCriteria searchCriteria = new SearchCriteria(null, Rating.FOUR, null, null, null);
+        List<Restaurant> restaurants = new RestaurantService().findByFilters(searchCriteria);
         Assertions.assertEquals(5, restaurants.size());
     }
 
     @Test
     public void shouldFindByDistance() {
         SearchCriteria searchCriteria = new SearchCriteria(null, null, 3, null, null);
-        List<Restaurant> restaurants = new RestaurantService().findByRestaurantDistance(searchCriteria);
+        List<Restaurant> restaurants = new RestaurantService().findByFilters(searchCriteria);
         Assertions.assertEquals(1, restaurants.size());
     }
 
     @Test
     public void shouldFindByPrice() {
-        SearchCriteria searchCriteria = new SearchCriteria(null, null, 0, new BigDecimal(30), null);
-        List<Restaurant> restaurants = new RestaurantService().findByRestaurantPrice(searchCriteria);
+        SearchCriteria searchCriteria = new SearchCriteria(null, null, null, new BigDecimal(30), null);
+        List<Restaurant> restaurants = new RestaurantService().findByFilters(searchCriteria);
         Assertions.assertEquals(4, restaurants.size());
     }
 
     @Test
     public void shouldFindByCuisine() {
-        SearchCriteria searchCriteria = new SearchCriteria(null, null, 0, null, "Russian");
-        List<Restaurant> restaurants = new RestaurantService().findByRestaurantCuisine(searchCriteria);
+        SearchCriteria searchCriteria = new SearchCriteria(null, null, null, null, "Russian");
+        List<Restaurant> restaurants = new RestaurantService().findByFilters(searchCriteria);
+        Assertions.assertEquals(1, restaurants.size());
+    }
+
+    @Test
+    public void shouldFindByNameAndCuisine() {
+        SearchCriteria searchCriteria = new SearchCriteria("Del", null, null, null, "Russian");
+        List<Restaurant> restaurants = new RestaurantService().findByFilters(searchCriteria);
         Assertions.assertEquals(1, restaurants.size());
     }
 }

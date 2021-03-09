@@ -9,12 +9,12 @@ public class SearchCriteria {
     // Cuisine(Chinese, American, Thai, etc.)
 
     private String restaurantName;
-     private Rating rating;
-     private int distance;
-     private BigDecimal price;
-     private String cuisine;
+    private Rating rating;
+    private Integer distance;
+    private BigDecimal price;
+    private String cuisine;
 
-    public SearchCriteria(String restaurantName, Rating rating, int distance, BigDecimal price, String cuisine) {
+    public SearchCriteria(String restaurantName, Rating rating, Integer distance, BigDecimal price, String cuisine) {
         this.restaurantName = restaurantName;
         this.rating = rating;
         this.distance = distance;
@@ -30,7 +30,7 @@ public class SearchCriteria {
         return rating;
     }
 
-    public int getDistance() {
+    public Integer getDistance() {
         return distance;
     }
 
