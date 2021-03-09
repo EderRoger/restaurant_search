@@ -6,6 +6,7 @@ import com.eroger.domain.SearchCriteria;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class RestaurantServiceTest {
@@ -47,5 +48,12 @@ public class RestaurantServiceTest {
         SearchCriteria searchCriteria = new SearchCriteria(null, null, 3, null, null);
         List<Restaurant> restaurants = new RestaurantService().findByRestaurantDistance(searchCriteria);
         Assertions.assertEquals(1, restaurants.size());
+    }
+
+    @Test
+    public void shouldFindByPrice() {
+        SearchCriteria searchCriteria = new SearchCriteria(null, null, 0, new BigDecimal(30), null);
+        List<Restaurant> restaurants = new RestaurantService().findByRestaurantPrice(searchCriteria);
+        Assertions.assertEquals(4, restaurants.size());
     }
 }
