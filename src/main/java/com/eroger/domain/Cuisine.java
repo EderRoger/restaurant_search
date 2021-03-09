@@ -9,9 +9,6 @@ public class Cuisine {
     @CsvBindByPosition(position = 1)
     private String name;
 
-    public Cuisine() {
-    }
-
     public Integer getId() {
         return id;
     }

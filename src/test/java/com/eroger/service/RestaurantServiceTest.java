@@ -59,4 +59,11 @@ public class RestaurantServiceTest {
         List<Restaurant> restaurants = new RestaurantService().findByFilters(searchCriteria);
         Assertions.assertEquals(3, restaurants.size());
     }
+
+    @Test
+    public void shouldFindByRatingDistanceValueAndCuisine() {
+        SearchCriteria searchCriteria = new SearchCriteria(null, Rating.THREE, 2, new BigDecimal(20), "Japanese");
+        List<Restaurant> restaurants = new RestaurantService().findByFilters(searchCriteria);
+        Assertions.assertEquals(1, restaurants.size());
+    }
 }
