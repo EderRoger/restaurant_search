@@ -18,6 +18,33 @@ public class SearchCriteria {
         this.cuisine = cuisine;
     }
 
+//    public List<Restaurant> find(RestaurantRepository repository) {
+//        List<Restaurant> currentRestaurantList = new ArrayList<>();
+//
+//        if (nonNull(getRestaurantName())) {
+//            paramsCount++;
+//            currentRestaurantList = repository.findByName(this, currentRestaurantList);
+//        }
+//        if (nonNull(getDistance())) {
+//            paramsCount++;
+//            currentRestaurantList = repository.findByDistance(this, currentRestaurantList);
+//        }
+//        if (nonNull(getPrice())) {
+//            paramsCount++;
+//            currentRestaurantList = repository.findByPrice(this, currentRestaurantList);
+//        }
+//        if (nonNull(getRating())) {
+//            paramsCount++;
+//            currentRestaurantList = repository.findByRating(this, currentRestaurantList);
+//        }
+//        if (nonNull(getCuisine())) {
+//            paramsCount++;
+//            currentRestaurantList = repository.findByCuisine(this, currentRestaurantList);
+//        }
+//
+//        return currentRestaurantList;
+//    }
+
     public String getRestaurantName() {
         return restaurantName;
     }

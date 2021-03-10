@@ -21,7 +21,7 @@ public class RestaurantServiceTest {
 
     @BeforeEach
     public void setUp() {
-        service = new RestaurantService(new RestaurantRepository(new ParseRestaurantCSVService(), new ParseCuisineCSVService()));
+        service = new RestaurantService(new RestaurantRepository(new ParseRestaurantCSVService(), new ParseCuisineCSVService()), new SearchService());
     }
 
     @Test
@@ -99,41 +99,41 @@ public class RestaurantServiceTest {
     }
 
     @Test
-    public void shouldOrderByRatings(){
+    public void shouldOrderByRatings() {
         RestaurantRepository repositoryMock = mock(RestaurantRepository.class);
         SearchCriteria searchCriteria = new SearchCriteria("Tes", null, 2, null, null);
 
         List<Restaurant> restaurants = new ArrayList<>();
-        restaurants.add(new Restaurant("Test1",Rating.FOUR.getRating(),2,new BigDecimal(20),1));
-        restaurants.add(new Restaurant("Test2",Rating.THREE.getRating(),4,new BigDecimal(30),1));
-        restaurants.add(new Restaurant("Test3",Rating.TWO.getRating(),2,new BigDecimal(20),1));
-        restaurants.add(new Restaurant("Test4",Rating.ONE.getRating(),3,new BigDecimal(10),1));
+        restaurants.add(new Restaurant("Test1", Rating.FOUR.getRating(), 2, new BigDecimal(20), 1));
+        restaurants.add(new Restaurant("Test2", Rating.THREE.getRating(), 4, new BigDecimal(30), 1));
+        restaurants.add(new Restaurant("Test3", Rating.TWO.getRating(), 2, new BigDecimal(20), 1));
+        restaurants.add(new Restaurant("Test4", Rating.ONE.getRating(), 3, new BigDecimal(10), 1));
 
         when(repositoryMock.findByDistance(searchCriteria, new ArrayList<>())).thenReturn(restaurants);
         when(repositoryMock.findByName(searchCriteria, restaurants)).thenReturn(restaurants);
         when(repositoryMock.findCuisineById(1)).thenReturn(new Cuisine(1, "Thai"));
 
-        service = new RestaurantService(repositoryMock);
+        service = new RestaurantService(repositoryMock, new SearchService());
 
         Assertions.assertEquals("Test3", service.findBySearchCriteriaFilters(searchCriteria).get(0).getName());
     }
 
     @Test
-    public void shouldOrderByPrice(){
+    public void shouldOrderByPrice() {
         RestaurantRepository repositoryMock = mock(RestaurantRepository.class);
         SearchCriteria searchCriteria = new SearchCriteria("Tes", null, 2, null, null);
 
         List<Restaurant> restaurants = new ArrayList<>();
-        restaurants.add(new Restaurant("Test1",Rating.FOUR.getRating(),5,new BigDecimal(20),1));
-        restaurants.add(new Restaurant("Test2",Rating.TWO.getRating(),3,new BigDecimal(30),1));
-        restaurants.add(new Restaurant("Test3",Rating.TWO.getRating(),3,new BigDecimal(20),1));
-        restaurants.add(new Restaurant("Test4",Rating.ONE.getRating(),4,new BigDecimal(10),1));
+        restaurants.add(new Restaurant("Test1", Rating.FOUR.getRating(), 5, new BigDecimal(20), 1));
+        restaurants.add(new Restaurant("Test2", Rating.TWO.getRating(), 3, new BigDecimal(30), 1));
+        restaurants.add(new Restaurant("Test3", Rating.TWO.getRating(), 3, new BigDecimal(20), 1));
+        restaurants.add(new Restaurant("Test4", Rating.ONE.getRating(), 4, new BigDecimal(10), 1));
 
         when(repositoryMock.findByDistance(searchCriteria, new ArrayList<>())).thenReturn(restaurants);
         when(repositoryMock.findByName(searchCriteria, restaurants)).thenReturn(restaurants);
         when(repositoryMock.findCuisineById(1)).thenReturn(new Cuisine(1, "Thai"));
 
-        service = new RestaurantService(repositoryMock);
+        service = new RestaurantService(repositoryMock, new SearchService());
 
         Assertions.assertEquals("Test3", service.findBySearchCriteriaFilters(searchCriteria).get(0).getName());
     }

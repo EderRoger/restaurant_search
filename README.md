@@ -24,6 +24,10 @@ Was created tests to make sure the solution are working as expected
 
 To run the tests you can just run ``gradle test`` in the main directory.
 
+We don't have an entrypoint/api to test because I'm didn't use the Spring features to create and endpoint etc.
+
+All the features can be tested by unit and integration tests
+
 #IMPROVEMENTS
 
 We can implement like a cache to our API get requests. We should have a higher number of GET requests and would be 

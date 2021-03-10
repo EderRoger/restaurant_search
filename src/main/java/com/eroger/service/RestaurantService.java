@@ -4,7 +4,6 @@ import com.eroger.domain.Restaurant;
 import com.eroger.domain.SearchCriteria;
 import com.eroger.repository.RestaurantRepository;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,50 +14,30 @@ import static java.util.Objects.nonNull;
 public class RestaurantService {
 
     private final RestaurantRepository repository;
+    private final SearchService searchService;
 
-    public RestaurantService(final RestaurantRepository repository) {
+    public RestaurantService(final RestaurantRepository repository, final SearchService searchService) {
         this.repository = repository;
+        this.searchService = searchService;
     }
 
     public List<Restaurant> findBySearchCriteriaFilters(final SearchCriteria searchCriteria) {
 
         checkIfSearchCriteriaIsValid(searchCriteria);
 
-        List<Restaurant> currentRestaurantList = new ArrayList<>();
-        int searchParamsCount = 0;
-
-        if (nonNull(searchCriteria.getRestaurantName())) {
-            searchParamsCount++;
-            currentRestaurantList = repository.findByName(searchCriteria, currentRestaurantList);
-        }
-        if (nonNull(searchCriteria.getDistance())) {
-            searchParamsCount++;
-            currentRestaurantList = repository.findByDistance(searchCriteria, currentRestaurantList);
-        }
-        if (nonNull(searchCriteria.getPrice())) {
-            searchParamsCount++;
-            currentRestaurantList = repository.findByPrice(searchCriteria, currentRestaurantList);
-        }
-        if (nonNull(searchCriteria.getRating())) {
-            searchParamsCount++;
-            currentRestaurantList = repository.findByRating(searchCriteria, currentRestaurantList);
-        }
-        if (nonNull(searchCriteria.getCuisine())) {
-            searchParamsCount++;
-            currentRestaurantList = repository.findByCuisine(searchCriteria, currentRestaurantList);
-        }
+        List<Restaurant> currentRestaurantList = searchService.find(repository, searchCriteria);
 
         List<Restaurant> resultList = currentRestaurantList.stream().limit(5).collect(Collectors.toList());
 
-        if (searchParamsCount > 1 && resultList.size() > 1) {
+        if (searchService.getParamsCount() > 1 && resultList.size() > 1) {
             List<Restaurant> sortedList = sortByDistance(currentRestaurantList.stream().limit(5)
                     .collect(Collectors.toList()));
 
-            if(checkIfTwoFirstRestaurantHasTheSameDistance(sortedList)
+            if (checkIfTwoFirstRestaurantHasTheSameDistance(sortedList)
                     && checkIfTwoFirstRestaurantHasTheSameRating(sortedList))
                 return sortByPrice(sortedList);
 
-            if(checkIfTwoFirstRestaurantHasTheSameDistance(sortedList))
+            if (checkIfTwoFirstRestaurantHasTheSameDistance(sortedList))
                 return sortByRating(sortedList);
 
             return sortedList;
@@ -100,13 +79,13 @@ public class RestaurantService {
     private void checkIfSearchCriteriaIsValid(final SearchCriteria searchCriteria) {
         if (isNull(searchCriteria)) {
             throw new IllegalArgumentException("Criteria must be informed");
-        }else {
-            if(nonNull(searchCriteria.getRating()) && searchCriteria.getRating().getRating() > 5){
+        } else {
+            if (nonNull(searchCriteria.getRating()) && searchCriteria.getRating().getRating() > 5) {
                 throw new IllegalArgumentException("Ratings must be between 1 - 5");
             }
 
-            if(nonNull(searchCriteria.getDistance()) &&
-                    (searchCriteria.getDistance() < 1 || searchCriteria.getDistance() > 10)){
+            if (nonNull(searchCriteria.getDistance()) &&
+                    (searchCriteria.getDistance() < 1 || searchCriteria.getDistance() > 10)) {
                 throw new IllegalArgumentException("Distance must be between 1 - 10 miles");
             }
         }
