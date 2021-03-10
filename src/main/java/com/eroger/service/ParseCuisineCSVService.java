@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.List;
 
-public class ParseCuisineCSVService implements ParseService{
+public class ParseCuisineCSVService implements ParseService<Cuisine>{
     public List<Cuisine> parse() throws FileNotFoundException {
         String fileName = "src/main/resources/files/cuisines.csv";
 

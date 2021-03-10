@@ -19,7 +19,8 @@ public class RestaurantRepository {
     private List<Restaurant> restaurants = new ArrayList<>();
     private List<Cuisine> cuisines = new ArrayList<>();
 
-    public RestaurantRepository(ParseService parseRestaurantCSVService, ParseService parseCuisineCSVService) {
+    public RestaurantRepository(ParseService<Restaurant> parseRestaurantCSVService,
+                                ParseService<Cuisine> parseCuisineCSVService) {
         try {
             if(isNull(parseRestaurantCSVService) || isNull(parseCuisineCSVService)){ // With Spring we can inject here a @Service
                 parseRestaurantCSVService = new ParseRestaurantCSVService();
