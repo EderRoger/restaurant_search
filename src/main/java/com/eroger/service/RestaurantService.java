@@ -53,7 +53,8 @@ public class RestaurantService {
         if (paramsCount > 1 && result.size() > 1) {
             List<Restaurant> sortedList = sortByDistance(restaurantList.stream().limit(5).collect(Collectors.toList()));
 
-            if(checkIfTwoFirstRestaurantHasTheSameDistance(sortedList) && checkIfTwoFirstRestaurantHasTheSameRating(sortedList))
+            if(checkIfTwoFirstRestaurantHasTheSameDistance(sortedList)
+                    && checkIfTwoFirstRestaurantHasTheSameRating(sortedList))
                 return sortByPrice(sortedList);
 
             if(checkIfTwoFirstRestaurantHasTheSameDistance(sortedList))
@@ -75,7 +76,8 @@ public class RestaurantService {
 
     private boolean checkIfTwoFirstRestaurantHasTheSameRating(List<Restaurant> restaurantList) {
         if (!restaurantList.isEmpty() && restaurantList.size() >= 2)
-            return restaurantList.get(0).getCustomerRating().getRating() == restaurantList.get(1).getCustomerRating().getRating();
+            return restaurantList.get(0).getCustomerRating().getRating() == restaurantList.get(1)
+                    .getCustomerRating().getRating();
 
         return false;
     }
@@ -85,11 +87,13 @@ public class RestaurantService {
     }
 
     private List<Restaurant> sortByRating(List<Restaurant> restaurants) {
-        return restaurants.stream().limit(2).sorted(Comparator.comparing(Restaurant::getCustomerRating)).collect(Collectors.toList());
+        return restaurants.stream().limit(2).sorted(Comparator.comparing(Restaurant::getCustomerRating))
+                .collect(Collectors.toList());
     }
 
     private List<Restaurant> sortByPrice(List<Restaurant> restaurants) {
-        return restaurants.stream().limit(2).sorted(Comparator.comparing(Restaurant::getPrice)).collect(Collectors.toList());
+        return restaurants.stream().limit(2).sorted(Comparator.comparing(Restaurant::getPrice))
+                .collect(Collectors.toList());
     }
 
     private void searchCriteriaIsValid(SearchCriteria searchCriteria) {
