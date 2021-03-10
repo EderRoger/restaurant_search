@@ -1,20 +1,16 @@
 package com.eroger.domain;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class SearchCriteria {
-    // Customer Rating(1 star ~ 5 stars),
-    // Distance(1 mile ~ 10 miles),
-    // Price(how much one person will spend on average, $10 ~ $50),
-    // Cuisine(Chinese, American, Thai, etc.)
-
     private String restaurantName;
-    private Rating rating;
+    private Integer rating;
     private Integer distance;
     private BigDecimal price;
     private String cuisine;
 
-    public SearchCriteria(String restaurantName, Rating rating, Integer distance, BigDecimal price, String cuisine) {
+    public SearchCriteria(String restaurantName, Integer rating, Integer distance, BigDecimal price, String cuisine) {
         this.restaurantName = restaurantName;
         this.rating = rating;
         this.distance = distance;
@@ -27,7 +23,9 @@ public class SearchCriteria {
     }
 
     public Rating getRating() {
-        return rating;
+        if(Objects.nonNull(rating))
+            return Rating.findById(rating);
+        return null;
     }
 
     public Integer getDistance() {

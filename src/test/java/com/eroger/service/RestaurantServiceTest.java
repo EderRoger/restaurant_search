@@ -27,64 +27,75 @@ public class RestaurantServiceTest {
     @Test
     public void shouldFindByName() {
         SearchCriteria searchCriteria = new SearchCriteria("Del", null, null, null, null);
-        List<Restaurant> restaurants = service.findByFilters(searchCriteria);
+        List<Restaurant> restaurants = service.findBySearchCriteriaFilters(searchCriteria);
         Assertions.assertEquals(5, restaurants.size());
     }
 
     @Test
     public void shouldFindByNameSortedByDistance() {
         SearchCriteria searchCriteria = new SearchCriteria("Del", null, null, null, "Japanese");
-        List<Restaurant> restaurants = service.findByFilters(searchCriteria);
+        List<Restaurant> restaurants = service.findBySearchCriteriaFilters(searchCriteria);
         Assertions.assertEquals(3, restaurants.get(0).getDistance());
     }
 
     @Test
     public void shouldFindByRatings() {
-        SearchCriteria searchCriteria = new SearchCriteria(null, Rating.FOUR, null, null, null);
-        List<Restaurant> restaurants = service.findByFilters(searchCriteria);
+        SearchCriteria searchCriteria = new SearchCriteria(null, Rating.FOUR.getRating(), null, null, null);
+        List<Restaurant> restaurants = service.findBySearchCriteriaFilters(searchCriteria);
         Assertions.assertEquals(5, restaurants.size());
     }
 
     @Test
     public void shouldFindByDistance() {
         SearchCriteria searchCriteria = new SearchCriteria(null, null, 1, null, null);
-        List<Restaurant> restaurants = service.findByFilters(searchCriteria);
+        List<Restaurant> restaurants = service.findBySearchCriteriaFilters(searchCriteria);
         Assertions.assertEquals(5, restaurants.size());
     }
 
     @Test
     public void shouldFindByPrice() {
         SearchCriteria searchCriteria = new SearchCriteria(null, null, null, new BigDecimal(10), null);
-        List<Restaurant> restaurants = service.findByFilters(searchCriteria);
+        List<Restaurant> restaurants = service.findBySearchCriteriaFilters(searchCriteria);
         Assertions.assertEquals(5, restaurants.size());
     }
 
     @Test
     public void shouldFindByCuisine() {
         SearchCriteria searchCriteria = new SearchCriteria(null, null, null, null, "Russian");
-        List<Restaurant> restaurants = service.findByFilters(searchCriteria);
+        List<Restaurant> restaurants = service.findBySearchCriteriaFilters(searchCriteria);
         Assertions.assertEquals(5, restaurants.size());
     }
 
     @Test
     public void shouldFindByNameAndCuisine() {
         SearchCriteria searchCriteria = new SearchCriteria("Del", null, null, null, "Russian");
-        List<Restaurant> restaurants = service.findByFilters(searchCriteria);
+        List<Restaurant> restaurants = service.findBySearchCriteriaFilters(searchCriteria);
         Assertions.assertEquals(2, restaurants.size());
     }
 
     @Test
     public void shouldFindByRatingDistanceValueAndCuisine() {
-        SearchCriteria searchCriteria = new SearchCriteria(null, Rating.THREE, 2, new BigDecimal(20), "Japanese");
-        List<Restaurant> restaurants = service.findByFilters(searchCriteria);
+        SearchCriteria searchCriteria = new SearchCriteria(null, Rating.THREE.getRating(), 2, new BigDecimal(20), "Japanese");
+        List<Restaurant> restaurants = service.findBySearchCriteriaFilters(searchCriteria);
         Assertions.assertEquals(1, restaurants.size());
     }
 
     @Test
+    public void shouldReturnNothingWithWrongParams() {
+        SearchCriteria searchCriteria = new SearchCriteria(null, null, null, null, "Huawei");
+        List<Restaurant> restaurants = service.findBySearchCriteriaFilters(searchCriteria);
+        Assertions.assertEquals(0, restaurants.size());
+    }
+
+    @Test
     public void shouldThrowExceptionWhenCriteriaIsNull() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            service.findByFilters(null);
-        });
+        Assertions.assertThrows(IllegalArgumentException.class, () -> service.findBySearchCriteriaFilters(null));
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenCriteriaHasInvalidDistance() {
+        SearchCriteria searchCriteria = new SearchCriteria(null, null, 40, null, null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> service.findBySearchCriteriaFilters(searchCriteria));
     }
 
     @Test
@@ -104,7 +115,7 @@ public class RestaurantServiceTest {
 
         service = new RestaurantService(repositoryMock);
 
-        Assertions.assertEquals("Test3", service.findByFilters(searchCriteria).get(0).getName());
+        Assertions.assertEquals("Test3", service.findBySearchCriteriaFilters(searchCriteria).get(0).getName());
     }
 
     @Test
@@ -124,6 +135,6 @@ public class RestaurantServiceTest {
 
         service = new RestaurantService(repositoryMock);
 
-        Assertions.assertEquals("Test3", service.findByFilters(searchCriteria).get(0).getName());
+        Assertions.assertEquals("Test3", service.findBySearchCriteriaFilters(searchCriteria).get(0).getName());
     }
 }

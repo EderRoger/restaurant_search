@@ -25,57 +25,53 @@ public class RestaurantRepository {
         }
     }
 
-    public List<Restaurant> findByName(SearchCriteria searchCriteria, List<Restaurant> currentRestaurantList) {
+    public List<Restaurant> findByName(final SearchCriteria searchCriteria, final List<Restaurant> currentRestaurantList) {
         if (currentRestaurantList.isEmpty())
-            return getRestaurants().stream().filter(r -> r.getName().contains(searchCriteria.getRestaurantName()))
+            return this.restaurants.stream().filter(r -> r.getName().contains(searchCriteria.getRestaurantName()))
                     .collect(Collectors.toList());
 
         return currentRestaurantList.stream().filter(r -> r.getName().contains(searchCriteria.getRestaurantName()))
                 .collect(Collectors.toList());
     }
 
-    public List<Restaurant> findByDistance(SearchCriteria searchCriteria, List<Restaurant> currentRestaurantList) {
+    public List<Restaurant> findByDistance(final SearchCriteria searchCriteria, final List<Restaurant> currentRestaurantList) {
         if (currentRestaurantList.isEmpty())
-            return getRestaurants().stream().filter(r -> r.getDistance() <= searchCriteria.getDistance())
+            return this.restaurants.stream().filter(r -> r.getDistance() <= searchCriteria.getDistance())
                     .collect(Collectors.toList());
 
         return currentRestaurantList.stream().filter(r -> r.getDistance() <= searchCriteria.getDistance())
                 .collect(Collectors.toList());
     }
 
-    public List<Restaurant> findByPrice(SearchCriteria searchCriteria, List<Restaurant> currentRestaurantList) {
+    public List<Restaurant> findByPrice(final SearchCriteria searchCriteria, final List<Restaurant> currentRestaurantList) {
         if (currentRestaurantList.isEmpty())
-            return getRestaurants().stream().filter(r -> r.getPrice().compareTo(searchCriteria.getPrice()) <= 0)
+            return this.restaurants.stream().filter(r -> r.getPrice().compareTo(searchCriteria.getPrice()) <= 0)
                     .collect(Collectors.toList());
 
         return currentRestaurantList.stream().filter(r -> r.getPrice().compareTo(searchCriteria.getPrice()) <= 0)
                 .collect(Collectors.toList());
     }
 
-    public List<Restaurant> findByRating(SearchCriteria searchCriteria, List<Restaurant> currentRestaurantList) {
+    public List<Restaurant> findByRating(final SearchCriteria searchCriteria, final List<Restaurant> currentRestaurantList) {
         if (currentRestaurantList.isEmpty())
-            return getRestaurants().stream().filter(r -> r.getCustomerRating().getRating() >=
+            return this.restaurants.stream().filter(r -> r.getCustomerRating().getRating() >=
                     searchCriteria.getRating().getRating()).collect(Collectors.toList());
 
         return currentRestaurantList.stream().filter(r -> r.getCustomerRating().getRating() >=
                 searchCriteria.getRating().getRating()).collect(Collectors.toList());
     }
 
-    public List<Restaurant> findByCuisine(SearchCriteria searchCriteria, List<Restaurant> currentRestaurantList) {
+    public List<Restaurant> findByCuisine(final SearchCriteria searchCriteria, final List<Restaurant> currentRestaurantList) {
         if (currentRestaurantList.isEmpty())
-            return getRestaurants().stream().filter(r -> findCuisineById(r.getCuisineId()).getName()
+            return this.restaurants.stream().filter(r -> findCuisineById(r.getCuisineId()).getName()
                     .contains(searchCriteria.getCuisine())).collect(Collectors.toList());
 
         return currentRestaurantList.stream().filter(r -> findCuisineById(r.getCuisineId()).getName()
                 .contains(searchCriteria.getCuisine())).collect(Collectors.toList());
     }
 
-    public List<Restaurant> getRestaurants() {
-        return restaurants;
-    }
-
-    public Cuisine findCuisineById(Integer cuisineId) {
-        return cuisines.stream().filter(c -> c.getId().equals(cuisineId)).findFirst().orElseThrow();
+    public Cuisine findCuisineById(final Integer cuisineId) {
+        return cuisines.stream().filter(c -> c.getId().equals(cuisineId)).findFirst().orElseThrow(IllegalArgumentException::new);
     }
 
 }

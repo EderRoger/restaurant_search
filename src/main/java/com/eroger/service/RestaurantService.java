@@ -14,44 +14,44 @@ import static java.util.Objects.nonNull;
 
 public class RestaurantService {
 
-    private RestaurantRepository repository;
+    private final RestaurantRepository repository;
 
-    public RestaurantService(RestaurantRepository repository) {
+    public RestaurantService(final RestaurantRepository repository) {
         this.repository = repository;
     }
 
-    public List<Restaurant> findByFilters(SearchCriteria searchCriteria) {
+    public List<Restaurant> findBySearchCriteriaFilters(final SearchCriteria searchCriteria) {
 
-        searchCriteriaIsValid(searchCriteria);
+        checkIfSearchCriteriaIsValid(searchCriteria);
 
-        List<Restaurant> restaurantList = new ArrayList<>();
-        int paramsCount = 0;
+        List<Restaurant> currentRestaurantList = new ArrayList<>();
+        int searchParamsCount = 0;
 
         if (nonNull(searchCriteria.getRestaurantName())) {
-            paramsCount++;
-            restaurantList = repository.findByName(searchCriteria, restaurantList);
+            searchParamsCount++;
+            currentRestaurantList = repository.findByName(searchCriteria, currentRestaurantList);
         }
         if (nonNull(searchCriteria.getDistance())) {
-            paramsCount++;
-            restaurantList = repository.findByDistance(searchCriteria, restaurantList);
+            searchParamsCount++;
+            currentRestaurantList = repository.findByDistance(searchCriteria, currentRestaurantList);
         }
         if (nonNull(searchCriteria.getPrice())) {
-            paramsCount++;
-            restaurantList = repository.findByPrice(searchCriteria, restaurantList);
+            searchParamsCount++;
+            currentRestaurantList = repository.findByPrice(searchCriteria, currentRestaurantList);
         }
         if (nonNull(searchCriteria.getRating())) {
-            paramsCount++;
-            restaurantList = repository.findByRating(searchCriteria, restaurantList);
+            searchParamsCount++;
+            currentRestaurantList = repository.findByRating(searchCriteria, currentRestaurantList);
         }
         if (nonNull(searchCriteria.getCuisine())) {
-            paramsCount++;
-            restaurantList = repository.findByCuisine(searchCriteria, restaurantList);
+            searchParamsCount++;
+            currentRestaurantList = repository.findByCuisine(searchCriteria, currentRestaurantList);
         }
 
-        List<Restaurant> result = restaurantList.stream().limit(5).collect(Collectors.toList());
+        List<Restaurant> resultList = currentRestaurantList.stream().limit(5).collect(Collectors.toList());
 
-        if (paramsCount > 1 && result.size() > 1) {
-            List<Restaurant> sortedList = sortByDistance(restaurantList.stream().limit(5).collect(Collectors.toList()));
+        if (searchParamsCount > 1 && resultList.size() > 1) {
+            List<Restaurant> sortedList = sortByDistance(currentRestaurantList.stream().limit(5).collect(Collectors.toList()));
 
             if(checkIfTwoFirstRestaurantHasTheSameDistance(sortedList)
                     && checkIfTwoFirstRestaurantHasTheSameRating(sortedList))
@@ -64,17 +64,17 @@ public class RestaurantService {
 
         }
         // return all
-        return result;
+        return resultList;
     }
 
-    private boolean checkIfTwoFirstRestaurantHasTheSameDistance(List<Restaurant> restaurantList) {
+    private boolean checkIfTwoFirstRestaurantHasTheSameDistance(final List<Restaurant> restaurantList) {
         if (!restaurantList.isEmpty() && restaurantList.size() >= 2)
             return restaurantList.get(0).getDistance().equals(restaurantList.get(1).getDistance());
 
         return false;
     }
 
-    private boolean checkIfTwoFirstRestaurantHasTheSameRating(List<Restaurant> restaurantList) {
+    private boolean checkIfTwoFirstRestaurantHasTheSameRating(final List<Restaurant> restaurantList) {
         if (!restaurantList.isEmpty() && restaurantList.size() >= 2)
             return restaurantList.get(0).getCustomerRating().getRating() == restaurantList.get(1)
                     .getCustomerRating().getRating();
@@ -82,23 +82,32 @@ public class RestaurantService {
         return false;
     }
 
-    private List<Restaurant> sortByDistance(List<Restaurant> restaurants) {
+    private List<Restaurant> sortByDistance(final List<Restaurant> restaurants) {
         return restaurants.stream().sorted(Comparator.comparing(Restaurant::getDistance)).collect(Collectors.toList());
     }
 
-    private List<Restaurant> sortByRating(List<Restaurant> restaurants) {
+    private List<Restaurant> sortByRating(final List<Restaurant> restaurants) {
         return restaurants.stream().limit(2).sorted(Comparator.comparing(Restaurant::getCustomerRating))
                 .collect(Collectors.toList());
     }
 
-    private List<Restaurant> sortByPrice(List<Restaurant> restaurants) {
+    private List<Restaurant> sortByPrice(final List<Restaurant> restaurants) {
         return restaurants.stream().limit(2).sorted(Comparator.comparing(Restaurant::getPrice))
                 .collect(Collectors.toList());
     }
 
-    private void searchCriteriaIsValid(SearchCriteria searchCriteria) {
+    private void checkIfSearchCriteriaIsValid(final SearchCriteria searchCriteria) {
         if (isNull(searchCriteria)) {
             throw new IllegalArgumentException("Criteria must be informed");
+        }else {
+            if(nonNull(searchCriteria.getRating()) && searchCriteria.getRating().getRating() > 5){
+                throw new IllegalArgumentException("Ratings must be between 1 - 5");
+            }
+
+            if(nonNull(searchCriteria.getDistance()) &&
+                    (searchCriteria.getDistance() < 1 || searchCriteria.getDistance() > 10)){
+                throw new IllegalArgumentException("Distance must be between 1 - 10 miles");
+            }
         }
     }
 }
