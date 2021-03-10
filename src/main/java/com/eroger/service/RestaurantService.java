@@ -9,74 +9,92 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 public class RestaurantService {
 
-    private RestaurantRepository repository = new RestaurantRepository();
+    private RestaurantRepository repository;
+
+    public RestaurantService(RestaurantRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Restaurant> findByFilters(SearchCriteria searchCriteria) {
-        List<Restaurant> newList = new ArrayList<>();
+
+        searchCriteriaIsValid(searchCriteria);
+
+        List<Restaurant> restaurantList = new ArrayList<>();
         int paramsCount = 0;
 
         if (nonNull(searchCriteria.getRestaurantName())) {
             paramsCount++;
-            if (newList.isEmpty())
-                newList = repository.getRestaurants().stream().filter(r -> r.getName().contains(searchCriteria.getRestaurantName())).collect(Collectors.toList());
-            else
-                newList = newList.stream().filter(r -> r.getName().contains(searchCriteria.getRestaurantName())).collect(Collectors.toList());
+            restaurantList = repository.findByName(searchCriteria, restaurantList);
         }
         if (nonNull(searchCriteria.getDistance())) {
             paramsCount++;
-            if (newList.isEmpty())
-                newList = repository.getRestaurants().stream().filter(r -> r.getDistance() <= searchCriteria.getDistance()).collect(Collectors.toList());
-            else
-                newList = newList.stream().filter(r -> r.getDistance() <= searchCriteria.getDistance()).collect(Collectors.toList());
+            restaurantList = repository.findByDistance(searchCriteria, restaurantList);
         }
         if (nonNull(searchCriteria.getPrice())) {
             paramsCount++;
-            if (newList.isEmpty())
-                newList = repository.getRestaurants().stream().filter(r -> r.getPrice().compareTo(searchCriteria.getPrice()) <= 0).collect(Collectors.toList());
-            else
-                newList = newList.stream().filter(r -> r.getPrice().compareTo(searchCriteria.getPrice()) <= 0).collect(Collectors.toList());
+            restaurantList = repository.findByPrice(searchCriteria, restaurantList);
         }
         if (nonNull(searchCriteria.getRating())) {
             paramsCount++;
-            if (newList.isEmpty())
-                newList = repository.getRestaurants().stream().filter(r -> r.getCustomerRating().getRating() >= searchCriteria.getRating().getRating()).collect(Collectors.toList());
-            else
-                newList = newList.stream().filter(r -> r.getCustomerRating().getRating() >= searchCriteria.getRating().getRating()).collect(Collectors.toList());
+            restaurantList = repository.findByRating(searchCriteria, restaurantList);
         }
         if (nonNull(searchCriteria.getCuisine())) {
             paramsCount++;
-            if (newList.isEmpty())
-                newList = repository.getRestaurants().stream().filter(r ->  repository.findCuisineById(r.getCuisineId()).getName().contains(searchCriteria.getCuisine())).collect(Collectors.toList());
-            else
-                newList = newList.stream().filter(r -> repository.findCuisineById(r.getCuisineId()).getName().contains(searchCriteria.getCuisine())).collect(Collectors.toList());
+            restaurantList = repository.findByCuisine(searchCriteria, restaurantList);
         }
 
-
-        List<Restaurant> result = newList.stream().limit(5).collect(Collectors.toList());
+        List<Restaurant> result = restaurantList.stream().limit(5).collect(Collectors.toList());
 
         if (paramsCount > 1 && result.size() > 1) {
-            return sortByDistance(newList.stream().limit(5).collect(Collectors.toList()));
-        }
+            List<Restaurant> sortedList = sortByDistance(restaurantList.stream().limit(5).collect(Collectors.toList()));
 
+            if(checkIfTwoFirstRestaurantHasTheSameDistance(sortedList) && checkIfTwoFirstRestaurantHasTheSameRating(sortedList))
+                return sortByPrice(sortedList);
+
+            if(checkIfTwoFirstRestaurantHasTheSameDistance(sortedList))
+                return sortByRating(sortedList);
+
+            return sortedList;
+
+        }
         // return all
         return result;
     }
 
-//    When multiple matches are found, you should sort them as described below.
-//    Sort the restaurants by Distance first.
-//    After the above process, if two matches are still equal, then the restaurant with a higher customer rating wins.
-//    After the above process, if two matches are still equal, then the restaurant with a lower price wins.
-//    After the above process, if two matches are still equal, then you can randomly decide the order.
-//            Example: if the input is Customer Rating = 3 and Price = 15. Mcdonald’s is 4 stars
-//    with an average spend = \$10, and it is 1 mile away.
-//    And KFC is 3 stars with an average spend = \$8, and it is 1 mile away. Then we should consider Mcdonald’s as a better match than KFC.
-//        (They both matches the search criteria -> we compare distance -> we get a tie -> we then compare customer rating -> Mcdonald’s wins)
+    private boolean checkIfTwoFirstRestaurantHasTheSameDistance(List<Restaurant> restaurantList) {
+        if (!restaurantList.isEmpty() && restaurantList.size() >= 2)
+            return restaurantList.get(0).getDistance().equals(restaurantList.get(1).getDistance());
+
+        return false;
+    }
+
+    private boolean checkIfTwoFirstRestaurantHasTheSameRating(List<Restaurant> restaurantList) {
+        if (!restaurantList.isEmpty() && restaurantList.size() >= 2)
+            return restaurantList.get(0).getCustomerRating().getRating() == restaurantList.get(1).getCustomerRating().getRating();
+
+        return false;
+    }
 
     private List<Restaurant> sortByDistance(List<Restaurant> restaurants) {
         return restaurants.stream().sorted(Comparator.comparing(Restaurant::getDistance)).collect(Collectors.toList());
+    }
+
+    private List<Restaurant> sortByRating(List<Restaurant> restaurants) {
+        return restaurants.stream().limit(2).sorted(Comparator.comparing(Restaurant::getCustomerRating)).collect(Collectors.toList());
+    }
+
+    private List<Restaurant> sortByPrice(List<Restaurant> restaurants) {
+        return restaurants.stream().limit(2).sorted(Comparator.comparing(Restaurant::getPrice)).collect(Collectors.toList());
+    }
+
+    private void searchCriteriaIsValid(SearchCriteria searchCriteria) {
+        if (isNull(searchCriteria)) {
+            throw new IllegalArgumentException("Criteria must be informed");
+        }
     }
 }

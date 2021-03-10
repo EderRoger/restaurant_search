@@ -17,6 +17,17 @@ public class Restaurant {
     @CsvBindByPosition(position = 4)
     private Integer cuisineId;
 
+    public Restaurant() {
+    }
+
+    public Restaurant(String name, Integer customerRating, Integer distance, BigDecimal price, Integer cuisineId) {
+        this.name = name;
+        this.customerRating = customerRating;
+        this.distance = distance;
+        this.price = price;
+        this.cuisineId = cuisineId;
+    }
+
     public String getName() {
         return name;
     }

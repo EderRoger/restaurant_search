@@ -9,6 +9,14 @@ public class Cuisine {
     @CsvBindByPosition(position = 1)
     private String name;
 
+    public Cuisine() {
+    }
+
+    public Cuisine(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Integer getId() {
         return id;
     }
