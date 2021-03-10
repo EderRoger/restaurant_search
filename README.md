@@ -24,4 +24,8 @@ Was created tests to make sure the solution are working as expected
 
 To run the tests you can just run ``gradle test`` in the main directory.
 
-#
+#IMPROVEMENTS
+
+We can implement like a cache to our API get requests. We should have a higher number of GET requests and would be 
+
+great having a cache.

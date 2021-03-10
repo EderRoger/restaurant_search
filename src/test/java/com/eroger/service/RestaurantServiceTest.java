@@ -21,7 +21,7 @@ public class RestaurantServiceTest {
 
     @BeforeEach
     public void setUp() {
-        service = new RestaurantService(new RestaurantRepository());
+        service = new RestaurantService(new RestaurantRepository(new ParseRestaurantCSVService(), new ParseCuisineCSVService()));
     }
 
     @Test

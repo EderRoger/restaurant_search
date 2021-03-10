@@ -51,7 +51,8 @@ public class RestaurantService {
         List<Restaurant> resultList = currentRestaurantList.stream().limit(5).collect(Collectors.toList());
 
         if (searchParamsCount > 1 && resultList.size() > 1) {
-            List<Restaurant> sortedList = sortByDistance(currentRestaurantList.stream().limit(5).collect(Collectors.toList()));
+            List<Restaurant> sortedList = sortByDistance(currentRestaurantList.stream().limit(5)
+                    .collect(Collectors.toList()));
 
             if(checkIfTwoFirstRestaurantHasTheSameDistance(sortedList)
                     && checkIfTwoFirstRestaurantHasTheSameRating(sortedList))
