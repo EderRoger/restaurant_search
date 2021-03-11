@@ -115,7 +115,7 @@ public class RestaurantServiceTest {
 
         service = new RestaurantService(repositoryMock, new SearchService());
 
-        Assertions.assertEquals("Test3", service.findBySearchCriteriaFilters(searchCriteria).get(0).getName());
+        Assertions.assertEquals("Test1", service.findBySearchCriteriaFilters(searchCriteria).get(0).getName());
     }
 
     @Test

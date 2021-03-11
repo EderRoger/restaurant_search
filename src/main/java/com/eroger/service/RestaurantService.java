@@ -67,7 +67,7 @@ public class RestaurantService {
     }
 
     private List<Restaurant> sortByRating(final List<Restaurant> restaurants) {
-        return restaurants.stream().limit(2).sorted(Comparator.comparing(Restaurant::getCustomerRating))
+        return restaurants.stream().limit(2).sorted(Comparator.comparing(Restaurant::getCustomerRating).reversed())
                 .collect(Collectors.toList());
     }
 
