@@ -3,12 +3,14 @@ package com.eroger.service;
 import com.eroger.domain.Restaurant;
 import com.eroger.repository.RestaurantRepository;
 import com.eroger.domain.SearchCriteria;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
 
+@Service
 public class SearchService {
     private int paramsCount = 0;
 

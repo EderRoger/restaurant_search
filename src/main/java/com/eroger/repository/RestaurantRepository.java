@@ -6,6 +6,7 @@ import com.eroger.domain.SearchCriteria;
 import com.eroger.service.ParseCuisineCSVService;
 import com.eroger.service.ParseRestaurantCSVService;
 import com.eroger.service.ParseService;
+import org.springframework.stereotype.Repository;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -13,8 +14,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
-
+@Repository
 public class RestaurantRepository {
     private List<Restaurant> restaurants = new ArrayList<>();
     private List<Cuisine> cuisines = new ArrayList<>();
@@ -22,10 +22,6 @@ public class RestaurantRepository {
     public RestaurantRepository(ParseService<Restaurant> parseRestaurantCSVService,
                                 ParseService<Cuisine> parseCuisineCSVService) {
         try {
-            if(isNull(parseRestaurantCSVService) || isNull(parseCuisineCSVService)){ // With Spring we can inject here a @Service
-                parseRestaurantCSVService = new ParseRestaurantCSVService();
-                parseCuisineCSVService = new ParseCuisineCSVService();
-            }
             restaurants = parseRestaurantCSVService.parse();
             cuisines = parseCuisineCSVService.parse();
         } catch (FileNotFoundException e) {

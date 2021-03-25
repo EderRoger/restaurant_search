@@ -3,6 +3,7 @@ package com.eroger.service;
 import com.eroger.domain.Restaurant;
 import com.eroger.domain.SearchCriteria;
 import com.eroger.repository.RestaurantRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+@Service
 public class RestaurantService {
 
     private final RestaurantRepository repository;
